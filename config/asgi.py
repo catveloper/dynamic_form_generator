@@ -1,5 +1,5 @@
 """
-ASGI config for config project.
+ASGI config for dynamic_form_generator.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
