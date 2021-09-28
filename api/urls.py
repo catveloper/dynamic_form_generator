@@ -1,6 +1,4 @@
 from django.urls import path, include
-from drf_spectacular.views import SpectacularJSONAPIView, SpectacularAPIView, SpectacularSwaggerView, \
-    SpectacularRedocView
 from rest_framework import routers
 
 from api.views import *
@@ -16,5 +14,5 @@ urlpatterns = [
     path('', include(router.urls)),
 
     # Custom API
-    path('form_generate/', FormGeneratorAPI.as_view()),
+    path('form_generate/static/', StaticFormGeneratorAPI.as_view(), name='static_form_schema'),
 ]

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ko">
+<head>
+    <title>Markdown Editor</title>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@braid/vue-formulate@2.5.2/dist/formulate.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet"  type="text/css" href="{% static 'css/vue-formulate.css' %}"/>
+</head>
+<body>
+<div>
+    <div>
+        <h1>정적인 폼</h1>
+    </div>
+    <div id="editor">
+        <formulate-form v-model="values" :schema="schema"></formulate-form>
+    </div>
+</div>
+<script>
+    form_url = '{% url 'api:static_form_schema' %}'
+    Vue.use(VueFormulate);
+    new Vue({
+        el: "#editor",
+        mounted() {
+            axios.get(form_url)
+                .then(res => {
+                    this.schema = res.data
+                })
+                .catch(err =>{
+                    console.log(err)
+                });
+        },
+        data: {
+            values: {},
+            schema: []
+        }
+    });
+</script>
+</body>
+</html>

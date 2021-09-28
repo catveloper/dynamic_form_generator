@@ -23,8 +23,12 @@ from config.views import HomeView
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
     path('admin/', admin.site.urls),
+]
+# include URLs
+urlpatterns += [
     path('auth/', include('rest_framework.urls')),
     path('api/', include('api.urls')),
+    path('form_generator/', include('apps.form_generator.urls')),
 ]
 
 # Spectacular Document API
