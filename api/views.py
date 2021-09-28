@@ -1,12 +1,17 @@
+import re
 from urllib.request import Request
 
 from django.contrib.auth.models import User, Group
+from django.urls import URLPattern, URLResolver, resolve
+from drf_spectacular.generators import SchemaGenerator
 from rest_framework import permissions
 from rest_framework import viewsets
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api.serializers import UserSerializer, GroupSerializer
+from config import settings
 
 
 class StaticFormGeneratorAPI(APIView):
@@ -102,7 +107,12 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
+
+    @action(detail=False, methods=['get'])
+    def schema(self, request: Request) -> Response:
+        patterns = [resolve('api:user_schema')]
+        return Response(SchemaGenerator(patterns=patterns).get_schema())
 
 
 class GroupViewSet(viewsets.ModelViewSet):
