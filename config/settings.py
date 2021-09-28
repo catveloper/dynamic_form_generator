@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'drf_spectacular',
+    'webpack_loader',
     'api.apps.ApiConfig',
     'apps.form_generator.apps.FormGeneratorConfig',
 ]
@@ -56,7 +57,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
+        'DIRS': [BASE_DIR / 'public']
         ,
         'APP_DIRS': True,
         'OPTIONS': {
@@ -160,4 +161,13 @@ SPECTACULAR_SETTINGS = {
 
     # https://www.npmjs.com/package/swagger-ui-dist 해당 링크에서 최신버전을 확인후 취향에 따라 version을 수정해서 사용하세요.
     'SWAGGER_UI_DIST': '//unpkg.com/swagger-ui-dist@3.38.0',
+}
+
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'CACHE': DEBUG,
+        'BUNDLE_DIR_NAME': '/bundles/',  # must end with slash
+        'STATS_FILE': BASE_DIR / 'webpack-stats.json',
+    }
 }

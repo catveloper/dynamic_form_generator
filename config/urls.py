@@ -18,7 +18,10 @@ from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularJSONAPIView, SpectacularSwaggerView, \
     SpectacularRedocView
 
+from config.views import HomeView
+
 urlpatterns = [
+    path('', HomeView.as_view(), name='home'),
     path('admin/', admin.site.urls),
     path('auth/', include('rest_framework.urls')),
     path('api/', include('api.urls')),
@@ -26,8 +29,8 @@ urlpatterns = [
 
 # Spectacular Document API
 urlpatterns += [
-    path("api/docs/json/", SpectacularJSONAPIView.as_view(), name="schema-json"),
-    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    path("docs/json/", SpectacularJSONAPIView.as_view(), name="schema-json"),
+    path('schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]
