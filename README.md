@@ -1,4 +1,4 @@
-# config
+# dynamic_form_generator
 
 ## Project setup
 ```

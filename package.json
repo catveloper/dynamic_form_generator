@@ -1,12 +1,18 @@
 {
-  "name": "config",
-  "version": "0.1.0",
+  "name": "dynamic_form_generator",
+  "version": "1.0.0",
   "private": true,
+  "description": "## Project setup ```shell pip install -r ./requirements.txt",
+  "author": {
+    "name": "im-donguk"
+  },
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "main": "babel.config.js",
   "dependencies": {
     "@braid/vue-formulate": "^2.5.2",
     "core-js": "^3.6.5",
@@ -40,5 +46,19 @@
     "> 1%",
     "last 2 versions",
     "not dead"
-  ]
+  ],
+  "_id": "dynamic_form_generator@1.0.0",
+  "bugs": {
+    "url": "https://github.com/catveloper/dynamic_form_generator/issues"
+  },
+  "homepage": "https://github.com/catveloper/dynamic_form_generator#readme",
+  "keywords": [
+    "dynamic_form_generator"
+  ],
+  "license": "ISC",
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/catveloper/dynamic_form_generator.git"
+  }
 }
