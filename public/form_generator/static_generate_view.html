@@ -18,13 +18,14 @@
     </div>
 </div>
 <script>
-    form_url = '{% url 'api:static_form_schema' %}'
+    form_url = '{% url 'api:user-form-schema' %}'
     Vue.use(VueFormulate);
     new Vue({
         el: "#editor",
         mounted() {
             axios.get(form_url)
                 .then(res => {
+                    console.log(res.data)
                     this.schema = res.data
                 })
                 .catch(err =>{

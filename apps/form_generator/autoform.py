@@ -1,47 +1,45 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field, asdict
-from typing import Union, List
+from typing import Union, List, Optional, Any
 
 
 @dataclass
-class Component(ABC):
-    component: str
-    clazz: str
-    children: Union[str, list]
+class Component:
+    component: str = 'div'
+    clazz: Optional[str] = None
+    children: List[Any] = field(default_factory=list)
 
 
 @dataclass
-class FormPiece:
+class FormUnit:
     type: str = field(init=False)
-    name: str = None
-    label: str = None
-    value: str = None
-    outer_class: List[str] = field(default_factory=List)
-
-    @property
-    def type(self):
-        return self.type or self.__class__.name.lower()
+    name: Optional[str] = None
+    label: Optional[str] = None
+    value: Optional[str] = None
+    outer_class: List[str] = field(default_factory=list)
 
     def get_form_schema(self):
-        asdict(self)
+        return asdict(self)
 
 
 @dataclass
-class Input(FormPiece):
+class Input(FormUnit):
     type: str = 'text'
     placeholder: str = None
 
 
 @dataclass
-class TextArea(FormPiece):
-    pass
+class TextArea(FormUnit):
+    type: str = 'textarea'
 
 
 @dataclass
-class Select(FormPiece):
+class Select(FormUnit):
+    type: str = 'select'
     options: dict = field(default_factory=dict)
 
 
 @dataclass
-class CheckBox(FormPiece):
+class CheckBox(FormUnit):
+    type: str = 'checkbox'
     options: dict = field(default_factory=dict)
