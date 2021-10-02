@@ -1,17 +1,17 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from dataclasses import dataclass, field, asdict
-from typing import Union, List, Optional, Any
+from typing import List, Optional, Any
 
 
 @dataclass
-class Component:
+class Component(ABC):
     component: str = 'div'
     clazz: Optional[str] = None
     children: List[Any] = field(default_factory=list)
 
 
 @dataclass
-class FormUnit:
+class FormUnit(ABC):
     type: str = field(init=False)
     name: Optional[str] = None
     label: Optional[str] = None
@@ -25,7 +25,7 @@ class FormUnit:
 @dataclass
 class Input(FormUnit):
     type: str = 'text'
-    placeholder: str = None
+    placeholder: Optional[str] = None
 
 
 @dataclass
@@ -36,6 +36,7 @@ class TextArea(FormUnit):
 @dataclass
 class Select(FormUnit):
     type: str = 'select'
+    placeholder: Optional[str] = None
     options: dict = field(default_factory=dict)
 
 
