@@ -15,7 +15,7 @@ from rest_framework.utils import model_meta
 from rest_framework.views import APIView
 
 from api.serializers import UserSerializer
-from apps.form_generator.autoform import FormUnit
+from apps.form_generator.components import FormUnit
 from apps.form_generator.enums import Form
 
 DEFAULT_FORM_UNIT = Form.INPUT

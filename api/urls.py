@@ -3,7 +3,7 @@ from drf_spectacular.views import SpectacularJSONAPIView, SpectacularAPIView, Sp
     SpectacularRedocView
 from rest_framework import routers
 
-from api.views import *
+from api.viewset import *
 
 app_name = 'api'
 

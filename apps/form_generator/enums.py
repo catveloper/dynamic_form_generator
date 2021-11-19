@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Type
 
-from apps.form_generator.autoform import *
+from apps.form_generator.components import *
 
 
 class Form(Enum):

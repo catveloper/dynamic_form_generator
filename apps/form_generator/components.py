@@ -17,6 +17,7 @@ class FormUnit(ABC):
     label: Optional[str] = None
     value: Optional[str] = None
     outer_class: List[str] = field(default_factory=list)
+    # TODO:확장옵션들도 맵형식으로 추가
 
     def get_form_schema(self):
         return asdict(self)

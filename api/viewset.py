@@ -13,7 +13,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api.serializers import UserSerializer, GroupSerializer, CustomUserSerializer
-from apps.form_generator.autoform import Input
+from apps.form_generator.components import Input
 from apps.form_generator.enums import Form
 from apps.form_generator.generator import form_generate_view
 
@@ -31,13 +31,13 @@ class StaticFormGeneratorAPI(APIView):
         )
 
 
-# @form_generate_view(
-#     form_units=[
-#         Form.INPUT(name='name', label='이름', placeholder='이름을 입력하세요'),
-#         Form.INPUT(name='url', label='유알엘', placeholder='url을 입력하세요', value='www.nave.com'),
-#         Form.SELECT(name='email', label='이메일', placeholder='email을 입력하세요', options=['@naver.com', '@google.com', '@daum.net'])
-#     ]
-# )
+@form_generate_view(
+    form_units=[
+        Form.INPUT(name='name', label='이름', placeholder='이름을 입력하세요'),
+        Form.INPUT(name='url', label='유알엘', placeholder='url을 입력하세요', value='www.nave.com'),
+        Form.SELECT(name='email', label='이메일', placeholder='email을 입력하세요', options=['@naver.com', '@google.com', '@daum.net'])
+    ]
+)
 
 class CustomUserViewSet(viewsets.ModelViewSet):
     """
