@@ -1,95 +1,26 @@
-import builtins
-import json
-from functools import wraps
-from pprint import pp
-
-from typing import List
-
-import typing
-from django.http import HttpRequest, HttpResponse
-from rest_framework.decorators import action
-from rest_framework.generics import GenericAPIView
-from rest_framework.response import Response
-from rest_framework.serializers import Serializer, ModelSerializer
-from rest_framework.utils import model_meta
-from rest_framework.views import APIView
-
-from api.serializers import UserSerializer
-from apps.form_generator.components import FormUnit
-from apps.form_generator.enums import Form
-
-DEFAULT_FORM_UNIT = Form.INPUT
-
-def _set_new_attribute(cls, name, value):
-    # Never overwrites an existing attribute.  Returns True if the
-    # attribute already exists.
-    if name in cls.__dict__:
-        return True
-    setattr(cls, name, value)
-    return False
+from drf_spectacular.openapi import *
+from rest_framework.serializers import Serializer
 
 
-def form_generate_view(func_name: str = 'form_schema', form_units: List[FormUnit] = [], use_serializer: bool = True):
-    """
-        class 적용 decorator
-    """
+class CustomAutoSchema(AutoSchema):
 
-    def decorator(cls: APIView = None):
-        @action(detail=False, methods=['get'])
-        def form_schema(self: GenericAPIView, request: HttpRequest) -> HttpResponse:
+    def _map_serializer_field(self, field, direction, bypass_extensions=False):
+        result = super()._map_serializer_field(field, direction, bypass_extensions)
+        meta = self._get_serializer_field_meta(field)
 
-            if use_serializer:
-                serializer = self.get_serializer()
-                declared_field_name = list(serializer.get_fields().keys())
-                custom_field_names = list(form_unit.name for form_unit in form_units)
-                default_form_field_names = list(set(declared_field_name).difference(custom_field_names))
+        if is_list_serializer(field) and is_serializer(field.child):
+            component = self.resolve_serializer(field.child, direction)
+            result = append_meta(build_array_type(component.schema), meta) if component else None
+        elif is_serializer(field):
+            component = self.resolve_serializer(field, direction)
+            result = append_meta(component.schema, meta) if component else None
 
-                for field_name in default_form_field_names:
-                    # TODO: Serializer META class 에 form 정보가 있다면 해당 정보로 바인딩
-                    label = _get_label(serializer, field_name)
-                    form_unit = DEFAULT_FORM_UNIT(name=field_name, label=label)
-                    form_units.append(form_unit)
-
-            schema = [form_unit.get_form_schema() for form_unit in form_units]
-            return Response(schema)
-
-        _set_new_attribute(cls, 'form_schema', form_schema)
-        return cls
-
-    return decorator
+        return result
 
 
-def _get_label(serializer, field_name):
-    if isinstance(serializer, ModelSerializer):
-        model_class = serializer.Meta.model
-        model_field_info = model_meta.get_field_info(model_class)
-        field = model_field_info.fields.get(field_name)
-        label = field.verbose_name if field else None
-    else:
-        return None
-
-    return label
-
-
-# def form_generate(form_units: List[FormUnit] = []):
-#     """
-#         function 적용 decorator
-#     """
-#
-#     def decorator(func):
-#         @wraps(func)
-#         def inner(self: GenericAPIView, request: HttpRequest) -> HttpResponse:
-#             form = []
-#
-#             serializer: UserSerializer = self.serializer_class
-#
-#             for form_unit in form_units:
-#                 form.append(form_unit.get_form_schema())
-#             form_str = json.dumps(form)
-#             pp(form_str)
-#             return Response(form)
-#
-#         _set_new_attribute(cls, 'form_schema', form_schema)
-#         return cls
-#
-#     return decorator
+def get_schema(serializer_class: Serializer):
+    serializer = force_instance(serializer_class)
+    auto_schema = CustomAutoSchema()
+    auto_schema.registry = ComponentRegistry()
+    component = auto_schema.resolve_serializer(serializer, direction='request')
+    return getattr(component, 'schema', None)

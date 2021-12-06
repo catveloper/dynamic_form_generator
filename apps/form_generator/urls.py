@@ -1,9 +1,14 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
-from apps.form_generator.views import StaticGenerateFV
+from apps.form_generator.viewset import FormulatorAPI
 
 app_name = 'form_generator'
 
+router = DefaultRouter()
+router.register(r'', viewset=FormulatorAPI, basename='form')
+
 urlpatterns = [
-    path('static/', StaticGenerateFV.as_view(), name='static')
+    path('', include(router.urls)),
 ]
+

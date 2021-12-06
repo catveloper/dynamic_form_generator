@@ -27,5 +27,5 @@ urlpatterns = [
 urlpatterns += [
     path('auth/', include('rest_framework.urls')),
     path('api/', include('api.urls')),
-    path('form_generator/', include('apps.form_generator.urls')),
+    path('test/', include('apps.test.urls')),
 ]

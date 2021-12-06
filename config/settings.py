@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'webpack_loader',
     'api.apps.ApiConfig',
     'apps.form_generator.apps.FormGeneratorConfig',
+    'apps.test.apps.TestConfig',
 ]
 
 MIDDLEWARE = [
@@ -161,6 +162,7 @@ SPECTACULAR_SETTINGS = {
 
     # https://www.npmjs.com/package/swagger-ui-dist 해당 링크에서 최신버전을 확인후 취향에 따라 version을 수정해서 사용하세요.
     'SWAGGER_UI_DIST': '//unpkg.com/swagger-ui-dist@3.38.0',
+    'COMPONENT_SPLIT_REQUEST': True
 }
 
 

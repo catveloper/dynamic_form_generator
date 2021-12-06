@@ -19,14 +19,13 @@ urlpatterns = [
 
 # Custom API
 urlpatterns += [
-    path('form_generate/static/', StaticFormGeneratorAPI.as_view(), name='static_form_schema'),
+    path('', include('apps.form_generator.urls')),
 ]
 
 # Spectacular Document API
 urlpatterns += [
     path("docs/json/", SpectacularJSONAPIView.as_view(), name="schema-json"),
     path('schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('schema/user', SpectacularAPIView.as_view(), name='user_schema'),
     path('schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='api:schema'), name='swagger-ui'),
     path('schema/redoc/', SpectacularRedocView.as_view(url_name='api:schema'), name='redoc'),
 ]

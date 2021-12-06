@@ -1,47 +1,43 @@
 from abc import ABC
 from dataclasses import dataclass, field, asdict
-from typing import List, Optional, Any
+from typing import List, Optional, Any, Dict
+
+from apps.form_generator.ui_type.base import FormUnit
+
+
+# TODO: base ui_class 로 부터 vueformulator 형식의 schema 를 도출
+def toVueFormulatorSchema(form_cls):
+    pass
 
 
 @dataclass
-class Component(ABC):
-    component: str = 'div'
-    clazz: Optional[str] = None
-    children: List[Any] = field(default_factory=list)
-
-
-@dataclass
-class FormUnit(ABC):
+class ReactFormUnit(FormUnit):
     type: str = field(init=False)
     name: Optional[str] = None
     label: Optional[str] = None
     value: Optional[str] = None
-    outer_class: List[str] = field(default_factory=list)
-    # TODO:확장옵션들도 맵형식으로 추가
-
-    def get_form_schema(self):
-        return asdict(self)
+    extra_option: Dict[str, str] = field(default_factory=dict)
 
 
 @dataclass
-class Input(FormUnit):
+class Input(ReactFormUnit):
     type: str = 'text'
     placeholder: Optional[str] = None
 
 
 @dataclass
-class TextArea(FormUnit):
+class TextArea(ReactFormUnit):
     type: str = 'textarea'
 
 
 @dataclass
-class Select(FormUnit):
+class Select(ReactFormUnit):
     type: str = 'select'
     placeholder: Optional[str] = None
     options: dict = field(default_factory=dict)
 
 
 @dataclass
-class CheckBox(FormUnit):
+class CheckBox(ReactFormUnit):
     type: str = 'checkbox'
     options: dict = field(default_factory=dict)

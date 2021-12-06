@@ -2,42 +2,19 @@ from urllib.request import Request
 
 from django.contrib.auth.models import User, Group
 from django.http import HttpResponse, HttpRequest
-from django.views.decorators.http import require_http_methods
 from drf_spectacular.generators import SchemaGenerator
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiParameter, OpenApiExample
-from rest_framework import permissions, status
+from rest_framework import permissions
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api.serializers import UserSerializer, GroupSerializer, CustomUserSerializer
-from apps.form_generator.components import Input
-from apps.form_generator.enums import Form
-from apps.form_generator.generator import form_generate_view
+from apps.form_generator.enums import Widget
+from apps.form_generator.decorators import form_generate_view
 
-
-class StaticFormGeneratorAPI(APIView):
-    permission_classes = [permissions.AllowAny]
-
-    def get(self, request: Request) -> Response:
-        return Response(
-            data=[
-                {"type": "text", "name": "name", "label": None, "value": None, "outer_class": [], "placeholder": None},
-                {"type": "text", "name": "email", "label": None, "value": None, "outer_class": [], "placeholder": None},
-                {"type": "text", "name": "password", "label": None, "value": None, "outer_class": [],
-                 "placeholder": None}]
-        )
-
-
-@form_generate_view(
-    form_units=[
-        Form.INPUT(name='name', label='이름', placeholder='이름을 입력하세요'),
-        Form.INPUT(name='url', label='유알엘', placeholder='url을 입력하세요', value='www.nave.com'),
-        Form.SELECT(name='email', label='이메일', placeholder='email을 입력하세요', options=['@naver.com', '@google.com', '@daum.net'])
-    ]
-)
 
 class CustomUserViewSet(viewsets.ModelViewSet):
     """
@@ -48,9 +25,6 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny]
 
 
-@extend_schema_view(
-    list=extend_schema(tags=['extend_schema_view'], description='extend_schema_view로 꾸미기')
-)
 class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
