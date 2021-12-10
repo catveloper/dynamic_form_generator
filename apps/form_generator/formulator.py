@@ -4,7 +4,7 @@
 # TODO: 폼 제네레이터를 하나의 패키지화 시켜서 어디서든 적용가능하도록
 # TODO: url커스텀이 가능하도록
 from collections import OrderedDict
-from typing import Dict
+from typing import Dict, Any
 
 from rest_framework.serializers import ModelSerializer
 from rest_framework.utils import model_meta
@@ -13,7 +13,7 @@ from apps.form_generator.enums import Widget
 from apps.form_generator.generator import get_schema
 from apps.form_generator.ui_type.base import BaseFormUnit, FormUnit
 
-formulators: Dict[str, object] = {}
+formulators: Dict[str, Any] = {}
 
 
 def get_all_subclasses(cls):
@@ -51,10 +51,10 @@ class FormulatorOptions:
 class FormulatorMeta(type):
 
     @classmethod
-    def _get_declared_fields(cls, bases, attrs):
+    def _get_declared_fields(mcs, bases, attrs):
         fields = [(field_name, attrs.pop(field_name))
                   for field_name, obj in list(attrs.items())
-                  if isinstance(obj, FormUnit)]
+                  if isinstance(obj, FormUnit) or isinstance(type(obj), mcs)]
 
         # Ensures a base class field doesn't override cls attrs, and maintains
         # field precedence when inheriting multiple parents. e.g. if there is a
@@ -80,16 +80,21 @@ class FormulatorMeta(type):
 
         formulators[alias] = cls
 
+    @classmethod
+    def _validate_fields(mcs, serializer, fileds):
+        # TODO: 연관관계가 있는것만 formulator class 사용가능 , 아니면 에러
+        # TODO: 필드 중에 name 과 label이 선언 안되어 있다면, 자동으로 선언
+
+        pass
+
     def __new__(mcs, name, bases, attrs):
         attrs['_declared_fields'] = mcs._get_declared_fields(bases, attrs)
         new_class = super().__new__(mcs, name, bases, attrs)
-
         if len(bases) > 0:
-            # TODO: alias 가 있다면, alias를 따라서  없다면, class 네임으로 dictionary로 저장
             opts = new_class._meta = FormulatorOptions(getattr(new_class, 'Meta', None))
             alias = opts.alias or name
             mcs._register_formulator(new_class, alias)
-
+        # mcs._validate_fields(new_class._meta.serializer, attrs['_declared_fields'])
         return new_class
 
 
@@ -98,24 +103,50 @@ class Formulator(metaclass=FormulatorMeta):
     def get_serializer_schema(self):
         return get_schema(self._meta.serializer) if self._meta.serializer else None
 
-    def get_ui_schema(self, schema=None, name=None):
-        # 일단 모든 항목을 input 으로 필드네임을 name으로 설정
+    def get_ui_schema(self, schema=None, name="", prefix=""):
+        ui_schema = {}
+        obj = self._declared_fields.get(name)
+        prefix_name = "-".join([prefix, name]) if prefix and name else name
+
         if schema is None:
             schema = self.get_serializer_schema()
+            ui_schema['type'] = 'object'
+            properties = {}
+            for pp_name, pp_schema in schema['properties'].items():
+                properties[pp_name] = self.get_ui_schema(pp_schema, pp_name, prefix)
 
-        field_type = schema['type']
-        ui_schema = {}
-        if field_type == 'object' and schema.get('properties'):
-            ui_schema['type'] = field_type
-            ui_schema['properties'] = {}
-            for p_name, p_schema in schema['properties'].items():
-                ui_schema['properties'][p_name] = self.get_ui_schema(p_schema, p_name)
+            for filed_name, extra_field in self._declared_fields.items():
+                if filed_name in properties.keys():
+                    continue
+                extra_field.name = extra_field.name or filed_name
+                extra_field.label = extra_field.label or extra_field.name
+                properties[filed_name] = extra_field.get_schema()
 
-        elif field_type == 'array':
-            ui_schema['type'] = field_type
-            ui_schema['items'] = self.get_ui_schema(schema['items'], name)
+            properties = {
+                p_info[0]: p_info[1]
+                for p_info in sorted(properties.items(),
+                key=lambda p: p[1].get('type', ''))
+            }
+            ui_schema['properties'] = properties
+
+
+        elif isinstance(obj, Formulator):
+            field_type = schema['type']
+
+            if field_type == 'object':
+                ui_schema = obj.get_ui_schema(prefix=prefix_name)
+            elif field_type == 'array':
+                ui_schema['type'] = field_type
+                ui_schema['items'] = obj.get_ui_schema(prefix=prefix_name)
+
+        elif isinstance(obj, FormUnit):
+            obj.name = "-".join([prefix, prefix, obj.name]) if obj.name else prefix_name
+            obj.label = obj.label or name
+            ui_schema = obj.get_schema()
 
         else:
-            ui_schema = BaseFormUnit(Widget.INPUT, name, name).get_schema()
+            # TODO schema의 형태에 따른 다른 default_ui (dictionary or enum 활용)
+            default_ui = BaseFormUnit(Widget.INPUT, prefix_name, name)
+            ui_schema = default_ui.get_schema()
 
         return ui_schema

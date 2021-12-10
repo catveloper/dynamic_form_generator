@@ -11,33 +11,48 @@ def toVueFormulatorSchema(form_cls):
 
 
 @dataclass
-class ReactFormUnit(FormUnit):
+class ReactFU(FormUnit):
     type: str = field(init=False)
     name: Optional[str] = None
     label: Optional[str] = None
     value: Optional[str] = None
     extra_option: Dict[str, str] = field(default_factory=dict)
 
+    def convert_of(self, schema):
+        pass
+
 
 @dataclass
-class Input(ReactFormUnit):
+class Input(ReactFU):
     type: str = 'text'
     placeholder: Optional[str] = None
 
+    def convert_of(self, schema):
+        pass
+
 
 @dataclass
-class TextArea(ReactFormUnit):
+class TextArea(ReactFU):
     type: str = 'textarea'
 
+    def convert_of(self, schema):
+        pass
+
 
 @dataclass
-class Select(ReactFormUnit):
+class Select(ReactFU):
     type: str = 'select'
     placeholder: Optional[str] = None
     options: dict = field(default_factory=dict)
 
+    def convert_of(self, schema):
+        pass
+
 
 @dataclass
-class CheckBox(ReactFormUnit):
+class CheckBox(ReactFU):
     type: str = 'checkbox'
     options: dict = field(default_factory=dict)
+
+    def convert_of(self, schema):
+        pass

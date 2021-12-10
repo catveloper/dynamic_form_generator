@@ -1,9 +1,8 @@
 import copy
 from enum import Enum, EnumMeta
-from typing import Type
 
-from apps.form_generator.ui_type import vue_formulator,react
-from apps.form_generator.ui_type.base import FormUnit, BaseFormUnit
+from apps.form_generator.ui_type import vue_formulator, react
+from apps.form_generator.ui_type.base import BaseFormUnit
 
 
 class CustomEnumMeta(EnumMeta):
@@ -26,28 +25,38 @@ class CustomEnum(Enum, metaclass=CustomEnumMeta):
 
 
 class UIType(CustomEnum):
-    VUE = ('vue_formulate',)
-    REACT = ('react',)
+    VUE_FORMULATOR = ('vue_formulator', )
+    REACT = ('react', )
 
     def __init__(self, view_name: str):
         self.view_name = view_name
 
 
 class Widget(CustomEnum):
-    INPUT = ('text',)
-    TEXT_AREA = ('textarea', )
-    SELECT = ('select', )
-    CHECK_BOX = ('check_box', )
+    INPUT = ('text', vue_formulator.Input, react.Input)
+    TEXT_AREA = ('textarea', vue_formulator.TextArea, react.TextArea)
+    SELECT = ('select', vue_formulator.Select, react.Select)
+    CHECK_BOX = ('check_box', vue_formulator.CheckBox, react.CheckBox)
 
-    def __init__(self, ui_name: str, ):
+    def __init__(self, ui_name: str, *args):
         self.ui_name = ui_name
-
-    def __repr__(self):
-        return self.name
+        for idx, ui_type in enumerate(UIType):
+            setattr(self, ui_type.name, args[idx])
 
     def __call__(self, name=None, label=None, value=None, **keywords):
+        if keywords:
+            pass
+        return BaseFormUnit(self, name, label, value, **keywords)
 
-        return BaseFormUnit(name, label, value, keywords)
+    def __getitem__(self, key):
+        if isinstance(key, str):
+            result = getattr(self, key)
+        elif isinstance(key, UIType):
+            result = getattr(self, key.name)
+        else:
+            raise TypeError("Key is 'str' or 'UIType'!!")
 
-    def get_by_ui_type(self, type_name):
-        pass
+        if not result:
+            raise AttributeError('Not matched key')
+
+        return result

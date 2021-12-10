@@ -5,6 +5,7 @@ from django.db import models
 class Project(models.Model):
     name = models.CharField(max_length=30)
     url = models.URLField()
+    category = models.CharField(max_length=30, choices=[('image', '이미지'), ('audio', '음성'), ('video', '비디오'), ('point_cloud', '포인트 클라우드')])
 
 
 class Task(models.Model):

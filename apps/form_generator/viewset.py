@@ -7,6 +7,9 @@ from rest_framework.viewsets import *
 
 from api.serializers import UserSerializer
 from apps.form_generator import generator
+from apps.form_generator.convertors import Convertor
+from apps.form_generator.enums import UIType
+from apps.form_generator.formulator import formulators
 from apps.form_generator.serializers import FormGeneratorSerializer
 
 
@@ -34,10 +37,15 @@ class FormulatorAPI(GenericViewSet):
     )
     @action(detail=False, methods=['get'], url_path='form-generator', url_name='form_generator')
     def generator(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        serializer = FormGeneratorSerializer(data=request.query_params)
+        serializer = self.serializer_class(data=request.query_params)
         serializer.is_valid(raise_exception=True)
 
-        schema = generator.get_schema(UserSerializer)
+        alias = serializer.data['alias']
+        type = serializer.data['type']
+
+        form = formulators.get(alias)()
+        ui_schema = form.get_ui_schema()
+        schema = Convertor.convert(ui_schema, type, alias)
         return Response(schema, status=status.HTTP_200_OK)
 
     def get_form_class(self, alias):

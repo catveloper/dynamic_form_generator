@@ -10,7 +10,6 @@ app_name = 'api'
 router = routers.DefaultRouter()
 router.register(r'users', viewset=UserViewSet)
 router.register(r'groups', viewset=GroupViewSet)
-router.register(r'custom_users', viewset=CustomUserViewSet)
 
 # Auto Generate API
 urlpatterns = [

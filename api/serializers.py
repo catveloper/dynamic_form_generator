@@ -1,17 +1,7 @@
 from django.contrib.auth.models import User, Group
-from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema_serializer, OpenApiExample, extend_schema_field
 from rest_framework import serializers
 
 from apps.test.models import Task, Annotation, Project
-
-
-class CustomUserSerializer(serializers.ModelSerializer):
-    field_custom = serializers.SerializerMethodField(method_name="get_field_custom")
-
-    @extend_schema_field(OpenApiTypes.DATETIME)
-    def get_field_custom(self, data):
-        return '2021-03-06 20:54:00'
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -45,3 +35,4 @@ class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = ['name', 'annotations', 'project']
+        depth = 1

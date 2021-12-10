@@ -1,28 +1,14 @@
-from urllib.request import Request
-
 from django.contrib.auth.models import User, Group
 from django.http import HttpResponse, HttpRequest
 from drf_spectacular.generators import SchemaGenerator
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiParameter, OpenApiExample
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
 from rest_framework import permissions
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
-from api.serializers import UserSerializer, GroupSerializer, CustomUserSerializer
-from apps.form_generator.enums import Widget
-from apps.form_generator.decorators import form_generate_view
-
-
-class CustomUserViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = CustomUserSerializer
-    permission_classes = [permissions.AllowAny]
+from api.serializers import UserSerializer, GroupSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
