@@ -10,6 +10,8 @@ app_name = 'api'
 router = routers.DefaultRouter()
 router.register(r'users', viewset=UserViewSet)
 router.register(r'groups', viewset=GroupViewSet)
+router.register(r'projects', viewset=ProjectViewSet)
+router.register(r'tasks', viewset=TaskViewSet)
 
 # Auto Generate API
 urlpatterns = [
@@ -18,7 +20,7 @@ urlpatterns = [
 
 # Custom API
 urlpatterns += [
-    path('', include('apps.form_generator.urls')),
+    path('', include('apps.form_schema_generator.urls')),
 ]
 
 # Spectacular Document API

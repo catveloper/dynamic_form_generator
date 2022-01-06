@@ -3,15 +3,17 @@ from django.db import models
 
 
 class Project(models.Model):
-    name = models.CharField(max_length=30)
+    class Meta:
+        verbose_name = '프로젝트'
+    name = models.CharField(max_length=30, verbose_name='이름')
     url = models.URLField()
-    category = models.CharField(max_length=30, choices=[('image', '이미지'), ('audio', '음성'), ('video', '비디오'), ('point_cloud', '포인트 클라우드')])
+    category = models.CharField(verbose_name='카테고리', max_length=30, choices=[('image', '이미지'), ('audio', '음성'), ('video', '비디오'), ('point_cloud', '포인트 클라우드')])
 
 
 class Task(models.Model):
     project = models.ForeignKey(
         'Project', related_name='tasks',
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE, verbose_name='프로젝트'
     )
     name = models.CharField(max_length=30)
 
@@ -27,3 +29,7 @@ class Annotation(models.Model):
     )
 
     data = models.JSONField(default=dict, blank=True)
+
+    long_text = models.TextField(verbose_name='긴문장', help_text='헬프텍스트')
+
+    asd = models.Choices
