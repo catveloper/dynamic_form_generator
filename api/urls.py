@@ -20,7 +20,7 @@ urlpatterns = [
 
 # Custom API
 urlpatterns += [
-    path('', include('apps.form_schema_generator.urls')),
+    path('', include('form_schema_generator.urls')),
 ]
 
 # Spectacular Document API

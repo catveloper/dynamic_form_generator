@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 ]
 
+
 # include URLs
 urlpatterns += [
     path('auth/', include('rest_framework.urls')),

@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from apps.form_schema_generator.viewset import FormulatorAPI
+from .viewset import FormulatorAPI
 
 app_name = 'form_generator'
 

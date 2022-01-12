@@ -11,6 +11,8 @@ class Project(models.Model):
 
 
 class Task(models.Model):
+    class Meta:
+        verbose_name = '테스크'
     project = models.ForeignKey(
         'Project', related_name='tasks',
         on_delete=models.CASCADE, verbose_name='프로젝트'

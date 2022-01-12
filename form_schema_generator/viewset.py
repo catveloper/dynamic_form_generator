@@ -1,15 +1,15 @@
 from django.http import HttpRequest, HttpResponse
 from django.utils.functional import lazy
-from drf_spectacular.utils import OpenApiParameter, extend_schema
+from drf_spectacular.utils import OpenApiParameter, extend_schema, OpenApiExample
 from rest_framework import permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import *
 
-from apps.form_schema_generator.enums import UIType
-from apps.form_schema_generator.generator import UISchemaGenerator, get_schema
-from apps.form_schema_generator.serializers import FormGeneratorSerializer
-from apps.test.admin import UISchemaConvertor
+from .enums import UIType
+from .generator import UISchemaGenerator, get_schema, get_url_choices
+from .serializers import FormGeneratorSerializer
+from .convertors.base import UISchemaConvertor
 
 
 class FormulatorAPI(GenericViewSet):
@@ -24,19 +24,30 @@ class FormulatorAPI(GenericViewSet):
                 name="url",
                 required=True,
                 description="폼에 대응되는 API URL 입니다",
-                enum=lazy(serializer_class.get_declared_field_choices, list)('url')
+                enum=lazy(get_url_choices, list)()
             ),
             OpenApiParameter(
                 name="method",
                 required=True,
                 description="폼에 대응되는 API 호출 메소드입니다",
-                enum=lazy(serializer_class.get_declared_field_choices, list)('method')
+                enum=serializer_class.get_declared_field_choices('method')
             ),
             OpenApiParameter(
                 name="type",
                 required=True,
                 description="form-schema 가 생성될 타입입니다",
-                enum=lazy(serializer_class.get_declared_field_choices, list)('type')
+                enum=serializer_class.get_declared_field_choices('type')
+            ),
+        ],
+        examples=[
+            OpenApiExample(
+                summary="이거는 Response Body Example입니다.",
+                name="success_example",
+                value={
+                    "url": "/api/test_url/",
+                    "method": "POST",
+                    "type": "VUE_FORMULATOR",
+                },
             ),
         ],
     )

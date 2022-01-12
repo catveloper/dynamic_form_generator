@@ -1,10 +1,11 @@
 from rest_framework import serializers
 
-from apps.form_schema_generator.enums import UIType, HttpMethod
+from .enums import UIType, HttpMethod
+from .generator import FORM_GENERATABLE_URLS
 
 
 class FormGeneratorSerializer(serializers.Serializer):
-    url = serializers.ChoiceField(choices=[],)
+    url = serializers.ChoiceField(choices=FORM_GENERATABLE_URLS)
     method = serializers.ChoiceField(choices=HttpMethod.choices)
     type = serializers.ChoiceField(choices=UIType.choices)
 
@@ -12,9 +13,6 @@ class FormGeneratorSerializer(serializers.Serializer):
         pass
 
     def create(self, validated_data):
-        pass
-
-    def validate_url(self):
         pass
 
     @classmethod

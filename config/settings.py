@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'webpack_loader',
     'api.apps.ApiConfig',
-    'apps.form_schema_generator.apps.FormGeneratorConfig',
+    'form_schema_generator.apps.FormGeneratorConfig',
     'apps.test.apps.TestConfig',
 ]
 

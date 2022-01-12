@@ -8,7 +8,7 @@ from apps.test.models import Task, Annotation, Project
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['url', 'username', 'email', 'password', 'groups']
+        fields = ['url', 'username', 'email', 'password', 'is_staff']
 
 
 class GroupSerializer(serializers.ModelSerializer):
@@ -35,6 +35,7 @@ class TaskSerializer(serializers.ModelSerializer):
     annotations = AnnotationSerializer(label='어노테이션들', many=True)
 
     class Meta:
+        verbose_name = '테스크1'
         model = Task
-        fields = ['name', 'annotations', 'project']
+        fields = ['id', 'name', 'project', 'annotations']
         depth = 1

@@ -2,41 +2,56 @@
 {% load static %}
 <html lang="ko">
 <head>
-    <title>Markdown Editor</title>
-    <script src="https://unpkg.com/vue"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@braid/vue-formulate@2.5.2/dist/formulate.min.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <link rel="stylesheet"  type="text/css" href="{% static 'css/vue-formulate.css' %}"/>
+    <title>Form-Generator-playground</title>
+    <link rel="stylesheet"  type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900"/>
+    <link rel="stylesheet"  type="text/css" href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css"/>
+    <link rel="stylesheet"  type="text/css" href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css"/>
+    <link rel="stylesheet"  type="text/css" href="https://cdn.jsdelivr.net/npm/@koumoul/vjsf@1.25.0-beta.7/dist/main.css"/>
 </head>
 <body>
-<div>
-    <div>
-        <h1>정적인 폼</h1>
-    </div>
-    <div id="editor">
-        <formulate-form v-model="values" :schema="schema"></formulate-form>
-    </div>
-</div>
+<v-app id="app" style="height: 30%">
+    <v-form ref="form" v-model="valid">
+      <v-jsf v-model="model" :schema="schema" :options="options" @input="logEvent('input', $event)" @change="logEvent('change', $event)" />
+    </v-form>
+</v-app>
+
+<p class="codepen" data-height="800" data-default-tab="js,result" data-slug-hash="yLgRaVm" data-editable="true" data-user="yaffol" style="height: 300px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;">
+  <span>See the Pen <a href="https://codepen.io/yaffol/pen/yLgRaVm">
+  vjsf - anyOf</a> by Patrick Vale (<a href="https://codepen.io/yaffol">@yaffol</a>)
+  on <a href="https://codepen.io">CodePen</a>.</span>
+</p>
+<script async src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios@0.19.2/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@koumoul/vjsf@1.25.0-beta.7/dist/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@koumoul/vjsf@1.25.0-beta.7/dist/third-party.js"></script>
 <script>
-    form_url = '{% url 'api:user-form-schema' %}'
-    Vue.use(VueFormulate);
+    const model = {
+    }
+
+    const options =  {
+    }
+
+    const schema = {% autoescape off %}{{ api_form_schema }}{% endautoescape %}
+
+    Vue.component('VJsf', VJsf.default)
+
     new Vue({
-        el: "#editor",
-        mounted() {
-            axios.get(form_url)
-                .then(res => {
-                    console.log(res.data)
-                    this.schema = res.data
-                })
-                .catch(err =>{
-                    console.log(err)
-                });
-        },
-        data: {
-            values: {},
-            schema: []
+      el: '#app',
+      vuetify: new Vuetify(),
+      data: {
+        model,
+        options,
+        schema,
+        valid: null
+      },
+      methods: {
+        logEvent(key, $event) {
+          console.log('vjsf event', key, $event)
         }
-    });
+      }
+    })
 </script>
 </body>
 </html>

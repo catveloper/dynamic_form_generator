@@ -1,6 +1,14 @@
-from apps.form_schema_generator.convertors.base import SchemaConvertor
-from apps.form_schema_generator.convertors.form_schema import VueJSFConvertor
-from apps.form_schema_generator.enum_meta import ChoiceEnum
+from enum import Enum
+
+from .convertors.base import SchemaConvertor
+from .convertors.vue_formulator import VueFormulateConvertor
+from .enum_meta import ChoiceEnum
+
+
+class SchemaFieldType(str, Enum):
+    OBJECT = 'object'
+    ARRAY = 'array'
+    FIElD = 'field'
 
 
 class Widget(ChoiceEnum):
@@ -13,14 +21,16 @@ class Widget(ChoiceEnum):
     TEXTAREA = ('롱 텍스트',)
     JSON = ('JSON',)
     HIDDEN = ('숨김',)
+    TOGGLE = ('토글',)
+    PASSWORD = ('패스워드',)
 
     def __init__(self, view_name: str):
         self.view_name = view_name
 
 
 class UIType(ChoiceEnum):
-    VUE_JSF = ('vue_formulator', VueJSFConvertor())
-    REACT = ('react', VueJSFConvertor())
+    VueFormulate = ('VueFormulate', VueFormulateConvertor())
+    REACT = ('React', VueFormulateConvertor())
 
     def __init__(self, display: str, convertor: SchemaConvertor):
 

@@ -1,6 +1,6 @@
 from drf_spectacular.generators import SchemaGenerator
 from drf_spectacular.openapi import *
-from rest_framework.serializers import Serializer
+from rest_framework.serializers import Serializer, ModelSerializer
 
 
 class UISchemaGenerator(SchemaGenerator):
@@ -59,6 +59,36 @@ def get_schema(serializer_class: Serializer):
     serializer = force_instance(serializer_class)
     auto_schema = UIAutoSchema()
     component = auto_schema.resolve_serializer(serializer, direction='request')
+    schema = getattr(component, 'schema', None)
+    schema['title'] = get_serializer_title(serializer)
+
     return getattr(component, 'schema', None)
 
 
+def get_serializer_title(serializer):
+    title = ""
+
+    serializer_meta = getattr(serializer, 'Meta', False)
+    if getattr(serializer_meta, 'verbose_name', False):
+        title = getattr(serializer_meta, 'verbose_name')
+    elif type(serializer) == ModelSerializer:
+        title = serializer_meta.model._meta.verbose_name
+    else:
+        title = type(serializer).__name__
+        if title.endswith('Serializer'):
+            title = title[:-10]
+
+    return title
+
+
+def get_url_choices():
+    schema_generator = UISchemaGenerator()
+    endpoints = schema_generator.get_all_endpoints()
+    return set([
+        endpoint[0]
+        for endpoint in endpoints
+        if endpoint[2] in ['PUT', 'PATCH', 'POST']
+    ])
+
+
+FORM_GENERATABLE_URLS = set()

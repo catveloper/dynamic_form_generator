@@ -1,15 +1,18 @@
 import json
 
 from drf_spectacular.generators import EndpointEnumerator
+from setuptools import find_packages
 
-from apps.form_schema_generator.convertors import UiSchemaConvertor
-from apps.form_schema_generator.enums import UIType
-from apps.form_schema_generator.generator import UISchemaGenerator, get_schema
+from form_schema_generator.convertors.base import UISchemaConvertor
+from form_schema_generator.enums import UIType
+from form_schema_generator.generator import UISchemaGenerator, get_schema
 
+
+packages = find_packages()
 endpoints = EndpointEnumerator().get_api_endpoints()
-serializer = UISchemaGenerator().get_serializer_by_endpoint("/api/tasks/{id}/", 'PUT')
+serializer = UISchemaGenerator().get_serializer_by_endpoint("/api/tasks/", 'POST')
 json_schema = get_schema(serializer)
-ui_schema = UiSchemaConvertor().convert(json_schema)
-form_schema = UIType.VUE_JSF.convertor.convert(ui_schema)
+ui_schema = UISchemaConvertor().convert(json_schema)
+form_schema = UIType.VueFormulate.convertor.convert(ui_schema)
 form_json_schema = json.dumps(form_schema, indent=4, ensure_ascii=False)
 print(form_json_schema)
