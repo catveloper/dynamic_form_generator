@@ -1,14 +1,13 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
+from django.urls import path
 
-from .viewset import FormulatorAPI
+from .viewset import FormSchemaGeneratorAPI, ModelChoicesAPI
 
-app_name = 'form_generator'
+app_name = 'form_schema'
 
-router = DefaultRouter()
-router.register(r'', viewset=FormulatorAPI, basename='form')
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('form-schema-generate/', FormSchemaGeneratorAPI.as_view(), name='generate'),
+    path('model-list/', ModelChoicesAPI.as_view(), name='model_choices'),
+    path('model-list2/', ModelChoicesAPI.as_view(), name='model_choices2')
 ]
 

@@ -15,6 +15,7 @@ router.register(r'tasks', viewset=TaskViewSet)
 
 # Auto Generate API
 urlpatterns = [
+    path('form_generate/static/', StaticFormGeneratorAPI.as_view(), name='static_form_schema'),
     path('', include(router.urls)),
 ]
 

@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_filters',
     'rest_framework',
     'drf_spectacular',
     'webpack_loader',
@@ -130,6 +131,11 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.OrderingFilter',
+        'rest_framework.filters.SearchFilter',
+    ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10
@@ -172,4 +178,9 @@ WEBPACK_LOADER = {
         'BUNDLE_DIR_NAME': '/bundles/',  # must end with slash
         'STATS_FILE': BASE_DIR / 'webpack-stats.json',
     }
+}
+
+
+FORM_SCHEMA_GENERATOR_SETTINGS = {
+    'MODEL_CHOICES_API': 'api:form_schema:model_choices2'
 }

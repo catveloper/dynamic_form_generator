@@ -30,7 +30,6 @@ class Widget(ChoiceEnum):
 
 class UIType(ChoiceEnum):
     VueFormulate = ('VueFormulate', VueFormulateConvertor())
-    REACT = ('React', VueFormulateConvertor())
 
     def __init__(self, display: str, convertor: SchemaConvertor):
 

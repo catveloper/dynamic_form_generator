@@ -14,7 +14,7 @@ class VueFormulateConvertor(FormConvertMixin, SchemaConvertor):
             schema_object = schema if schema.get('properties') else schema['items']
             for p_name, p_schema in schema_object['properties'].items():
                 converted_property = self.convert(p_schema, p_name, level + 1)
-                if p_name in schema_object.get('required') and len(converted_property) == 1:
+                if p_name in schema_object.get('required', []) and len(converted_property) == 1:
                     self.add_validation(converted_property[0], 'required')
 
                 content.extend(converted_property)
@@ -24,7 +24,8 @@ class VueFormulateConvertor(FormConvertMixin, SchemaConvertor):
             # top level object
             if level == 0:
                 label = self._get_label(label_name, "h2")
-
+                if schema_type == 'array':
+                    content = [self._wrap_group(name, content, True)]
             # nested object
             elif schema_type == 'object':
                 label = self._get_label(label_name, "h3")

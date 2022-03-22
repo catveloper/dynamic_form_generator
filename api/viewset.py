@@ -7,10 +7,23 @@ from rest_framework import permissions
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from api.serializers import UserSerializer, GroupSerializer, ProjectSerializer, TaskSerializer
+from apps.test.filters import ProjectFilter
 from apps.test.models import Project, Task
 
+class StaticFormGeneratorAPI(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request) -> Response:
+        return Response(
+            data=[
+                {"type": "text", "name": "name", "label": None, "value": None, "outer_class": [], "placeholder": None},
+                {"type": "text", "name": "email", "label": None, "value": None, "outer_class": [], "placeholder": None},
+                {"type": "text", "name": "password", "label": None, "value": None, "outer_class": [],
+                 "placeholder": None}]
+        )
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -107,16 +120,18 @@ class GroupViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
-@extend_schema(tags=['테스트3'])
-@extend_schema(tags=['테스트'])
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     permission_classes = [permissions.AllowAny]
+    filter_class = ProjectFilter
 
     @action(detail=False)
     def test(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         return Response(SchemaGenerator().get_schema())
+
+
+
 
 
 class TaskViewSet(viewsets.ModelViewSet):

@@ -24,7 +24,7 @@ class SchemaConvertor(metaclass=ABCMeta):
 class UISchemaConvertor(SchemaConvertor):
 
     def convert(self, schema: dict, name="", level=0):
-
+        # TODO: 검증로직 재구현 drf-spectacular types 활용
         # object
         schema['title'] = schema.get('title', name)
         schema['description'] = schema.get('description', '')
@@ -74,7 +74,7 @@ class UISchemaConvertor(SchemaConvertor):
         elif schema_type == 'array' and 'items' in schema_keys and 'oneOf' in schema['items'].keys():
             widget = Widget.CHECKBOX
         # long_text
-        elif schema_type == 'string' and schema.get('maxLength', 300) >= 300:
+        elif schema_type == 'string' and schema.get('maxLength', 0) >= 300:
             widget = Widget.TEXTAREA
         # json_text
         elif schema_type == 'object' and 'additionalProperties' in schema_keys:
