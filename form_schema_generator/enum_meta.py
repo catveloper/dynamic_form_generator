@@ -1,4 +1,5 @@
 import copy
+from collections import OrderedDict
 from enum import EnumMeta, Enum
 
 
@@ -6,7 +7,7 @@ class ChoiceEnumMeta(EnumMeta):
 
     @property
     def choices(cls):
-        return [(instance.name, instance.value[0]) for instance in cls]
+        return OrderedDict([(instance.name, instance.value[0]) for instance in cls])
 
     def to_dict(cls):
         result: dict = {}

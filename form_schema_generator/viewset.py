@@ -6,18 +6,16 @@ from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .convertors.base import UISchemaConvertor
-from .enums import UIType
+from .enums import UIType, HttpMethod
 from .generator import get_schema, get_url_choices
-from .serializers import FormGeneratorSerializer
 
 
-# TODO: FBV 로 변경하거나, filter 사용해보기
-class FormSchemaGeneratorAPI(GenericAPIView):
+class FormSchemaGeneratorAPI(APIView):
 
     permission_classes = [permissions.AllowAny]
-    serializer_class = FormGeneratorSerializer
 
     @extend_schema(
         tags=['form-schema-generator'],
@@ -33,13 +31,13 @@ class FormSchemaGeneratorAPI(GenericAPIView):
                 name="method",
                 required=True,
                 description="폼에 대응되는 API 호출 메소드입니다",
-                enum=serializer_class.get_declared_field_choices('method')
+                enum=HttpMethod.choices
             ),
             OpenApiParameter(
                 name="type",
                 required=True,
                 description="form-schema 가 생성될 타입입니다",
-                enum=serializer_class.get_declared_field_choices('type')
+                enum=UIType.choices
             ),
         ],
         examples=[
@@ -52,12 +50,9 @@ class FormSchemaGeneratorAPI(GenericAPIView):
     )
     @action(detail=False, methods=['get'])
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        serializer = self.get_serializer(data=request.query_params)
-        serializer.is_valid()
-
-        url = serializer.data['url']
-        method = serializer.data['method']
-        view_type = serializer.data['type']
+        url = request.GET['url']
+        method = request.GET['method']
+        view_type = request.GET['type']
 
         json_schema = get_schema(url, method)
         ui_schema = UISchemaConvertor().convert(json_schema)

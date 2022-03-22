@@ -1,11 +1,6 @@
 # Create your views here.
 from django.views.generic import TemplateView
 
-from form_schema_generator.convertors.base import UISchemaConvertor
-from form_schema_generator.enums import UIType
-from form_schema_generator.generator import get_schema
-from form_schema_generator.serializers import FormGeneratorSerializer
-
 
 class StaticGenerateFV(TemplateView):
     template_name = 'form_generator/static_generate_view.html'
