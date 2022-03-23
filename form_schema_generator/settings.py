@@ -5,4 +5,4 @@ form_schema_generator_settings = {
     # TODO: 초이스 기본값 셀렉트, 라디오 변경가능하도록 옵션제공하기
 }
 
-form_schema_generator_settings.update(settings.FORM_SCHEMA_GENERATOR_SETTINGS)
+form_schema_generator_settings.update(getattr(settings, 'FORM_SCHEMA_GENERATOR_SETTINGS'))

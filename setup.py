@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='form_schema_generator',
-    version='1.1',
+    version='1.14',
     description='model base form schema generator',
     long_description=long_description,
     long_description_content_type="text/markdown",
